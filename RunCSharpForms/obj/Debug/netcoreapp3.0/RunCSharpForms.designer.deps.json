@@ -1,0 +1,28 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v3.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v3.0": {
+      "Microsoft.CodeDom.Providers.DotNetCompilerPlatform/4.1.0-preview1": {
+        "runtime": {
+          "lib/net472/Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll": {
+            "assemblyVersion": "4.1.0.0",
+            "fileVersion": "4.1.10416.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Microsoft.CodeDom.Providers.DotNetCompilerPlatform/4.1.0-preview1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Re46muj1aHF0+aIiPluw/wmr+ZQx4HhoZR53G2MHGy2Ovb2LQN3shHWoTAt4z7aXx+m+ml+vo7sHQWQHSJoAQA==",
+      "path": "microsoft.codedom.providers.dotnetcompilerplatform/4.1.0-preview1",
+      "hashPath": "microsoft.codedom.providers.dotnetcompilerplatform.4.1.0-preview1.nupkg.sha512"
+    }
+  }
+}

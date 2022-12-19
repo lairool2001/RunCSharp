@@ -1,0 +1,7 @@
+J:\project\RunCSharp2\RunCSharpForms\obj\Debug\netcoreapp3.0\RunCSharpForms.csproj.AssemblyReference.cache
+J:\project\RunCSharp2\RunCSharpForms\obj\Debug\netcoreapp3.0\RunCSharpForms.Form1.resources
+J:\project\RunCSharp2\RunCSharpForms\obj\Debug\netcoreapp3.0\RunCSharpForms.csproj.GenerateResource.cache
+J:\project\RunCSharp2\RunCSharpForms\obj\Debug\netcoreapp3.0\RunCSharpForms.GeneratedMSBuildEditorConfig.editorconfig
+J:\project\RunCSharp2\RunCSharpForms\obj\Debug\netcoreapp3.0\RunCSharpForms.AssemblyInfoInputs.cache
+J:\project\RunCSharp2\RunCSharpForms\obj\Debug\netcoreapp3.0\RunCSharpForms.AssemblyInfo.cs
+J:\project\RunCSharp2\RunCSharpForms\obj\Debug\netcoreapp3.0\RunCSharpForms.csproj.CoreCompileInputs.cache
