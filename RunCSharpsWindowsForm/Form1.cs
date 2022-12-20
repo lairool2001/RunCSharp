@@ -30,10 +30,18 @@ namespace RunCSharpsWindowsForm
             if (File.Exists("save"))
             {
                 save = JsonConvert.DeserializeObject<Save>(File.ReadAllText("save"));
+                listBox1.Items.Clear();
+                var asmEnumerator = save.asamblyHashSet.GetEnumerator();
+                while (asmEnumerator.MoveNext())
+                {
+                    listBox1.Items.Add(asmEnumerator.Current);
+                }
             }
             else
             {
                 save = new Save();
+                save.asamblyHashSet.Add("System.dll");
+                save.asamblyHashSet.Add("mscorlib.dll");
             }
         }
         void loadDir()
@@ -56,25 +64,28 @@ namespace RunCSharpsWindowsForm
             Button button = sender as Button;
             string file = Path.Combine(textBox1.Text, button.Text + ".cs");
 
+            FileInfo fileInfo = new FileInfo(file);
             string content = File.ReadAllText(file);
-            if (save.fileToOldContent.TryGetValue(file, out var oldContent))
+            if (save.fileToEditDateTime.TryGetValue(file, out var lastWriteTime))
             {
-                if (content.Length == oldContent.Length && content == oldContent)
+                if (fileInfo.LastWriteTime == lastWriteTime)
                 {
                     string exeToRun = save.exeOutputLastPath[file];
                     if (File.Exists(exeToRun))
                     {
                         Process.Start(exeToRun);
+                        label1.Text = "cache";
                         return;
                     }
                 }
             }
-            string exe = RunCSharp2.Program.compileAndRun(new string[] { file });
+            string exe = RunCSharp2.Program.compileAndRun(file, out var ms, save.asamblyHashSet.ToArray());
             if (exe != null)
             {
-                save.fileToOldContent[file] = content;
+                save.fileToEditDateTime[file] = fileInfo.LastWriteTime;
                 save.exeOutputLastPath[file] = exe;
             }
+            label1.Text = $"{ms} ms";
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -92,12 +103,37 @@ namespace RunCSharpsWindowsForm
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
+            updateAsamblyHashSet();
             File.WriteAllText("save", JsonConvert.SerializeObject(save));
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (listBox1.FindString(textBox2.Text) != -1) return;
+            listBox1.Items.Add(textBox2.Text);
+            updateAsamblyHashSet();
+            textBox2.Clear();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (listBox1.SelectedIndex == -1) return;
+            listBox1.Items.Remove(listBox1.SelectedItem);
+            updateAsamblyHashSet();
+        }
+        void updateAsamblyHashSet()
+        {
+            save.asamblyHashSet.Clear();
+            for (int i = 0; i < listBox1.Items.Count; i++)
+            {
+                save.asamblyHashSet.Add(listBox1.Items[i].ToString());
+            }
         }
     }
 }
 public class Save
 {
-    public Dictionary<string, string> fileToOldContent = new Dictionary<string, string>();
+    public Dictionary<string, DateTime> fileToEditDateTime = new Dictionary<string, DateTime>();
     public Dictionary<string, string> exeOutputLastPath = new Dictionary<string, string>();
+    public HashSet<string> asamblyHashSet = new HashSet<string>();
 }

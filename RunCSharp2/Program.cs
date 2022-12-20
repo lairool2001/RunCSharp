@@ -27,6 +27,7 @@ namespace RunCSharp2
         public const int OF_SHARE_DENY_NONE = 0x40;
         public static readonly IntPtr HFILE_ERROR = new IntPtr(-1);
         public static CodeDomProvider codeDomProvider = null;
+        public static CompilerParameters parameters = new CompilerParameters();
 
         public static void preloadCompiler()
         {
@@ -34,22 +35,24 @@ namespace RunCSharp2
         }
         public static void Main(string[] args)
         {
-            compileAndRun(args);
+            if (args.Length == 0) return;
+            compileAndRun(args[0], out var ms);
         }
         /// <summary>
         /// compile cs file and run
         /// </summary>
         /// <param name="args"></param>
         /// <returns>exe output file</returns>
-        public static string compileAndRun(string[] args)
+        public static string compileAndRun(string csFile, out long spreadTimeMs, params string[] asam)
         {
+            spreadTimeMs = 0;
             //args = new string[] { @"M:\小程式\亂撥音樂.cs" };
-            if (args.Length == 0) return null;
+            if (!File.Exists(csFile)) return null;
             try
             {
-                string path = args[0];
+                string content = File.ReadAllText(csFile);
+                string path = csFile;
                 Console.WriteLine(path);
-                string text = File.ReadAllText(path);
                 int num = 1;
                 string outputName = Path.GetFileNameWithoutExtension(path) + "-output.exe";
                 string outputPath;
@@ -78,15 +81,21 @@ namespace RunCSharp2
                 Stopwatch stopwatch = new Stopwatch();
                 stopwatch.Start();
                 if (codeDomProvider == null)
+                {
                     codeDomProvider = new Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider();
-                System.CodeDom.Compiler.CompilerParameters parameters = new CompilerParameters();
-                parameters.GenerateExecutable = true;
-                //parameters.GenerateExecutable = false;
+                }
+                parameters = new CompilerParameters();
                 //parameters.GenerateInMemory = true;
+                parameters.GenerateExecutable = true;
+                parameters.ReferencedAssemblies.AddRange(asam);
+                //parameters.ReferencedAssemblies.Add("System.dll");
+                //parameters.ReferencedAssemblies.Add("mscorlib.dll");
                 parameters.OutputAssembly = outputPath;
-                CompilerResults results = codeDomProvider.CompileAssemblyFromSource(parameters, text);
+                CompilerResults results = codeDomProvider.CompileAssemblyFromSource(parameters, content);
                 stopwatch.Stop();
-                Debug.WriteLine(stopwatch.ElapsedMilliseconds + "ms");
+                spreadTimeMs = stopwatch.ElapsedMilliseconds;
+                //Debug.WriteLine(stopwatch.ElapsedMilliseconds + "ms");
+                //MessageBox.Show(stopwatch.ElapsedMilliseconds + "ms");
                 //Console.WriteLine("Error Count:" + results.Errors.Count);
                 if (results.Errors.Count > 0)
                 {
